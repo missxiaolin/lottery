@@ -17,6 +17,15 @@ var logger *log.Logger
 //var packageList map[uint32][]uint = make(map[uint32][]uint)
 var packageList *sync.Map = new(sync.Map)
 
+// 任务结构
+type task struct {
+	id uint32
+	callback chan uint
+}
+
+const taskNum = 16
+var chTaskList []chan task = make([]chan task, taskNum)
+
 type lotteryController struct {
 	Ctx iris.Context
 }
@@ -31,6 +40,11 @@ func newApp() *iris.Application {
 	app := iris.New()
 	mvc.New(app.Party("/")).Handle(&lotteryController{})
 	initLog()
+
+	for i:=0; i<taskNum; i++ {
+		chTaskList[i] = make(chan task)
+		go fetchPackageMoney(chTaskList[i])
+	}
 
 	return app
 }
@@ -68,7 +82,6 @@ func (c *lotteryController) GetSet() string {
 	uid, errUid := c.Ctx.URLParamInt("uid")
 	money, errMoney := c.Ctx.URLParamFloat64("money")
 	num, errNum := c.Ctx.URLParamInt("num")
-
 	if errUid != nil || errMoney != nil || errNum != nil {
 		return fmt.Sprintf("参数格式异常，errUid=%s, errMoney=%s, errNum=%s\n", errUid, errMoney, errNum)
 	}
@@ -76,13 +89,20 @@ func (c *lotteryController) GetSet() string {
 	if uid < 1 || moneyTotal < num || num < 1 {
 		return fmt.Sprintf("参数数值异常，uid=%d, money=%d, num=%d\n", uid, money, num)
 	}
-
 	// 金额分配算法
 	leftMoney := moneyTotal
 	leftNum := num
 	// 分配的随机数
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	rMax := 0.55 // 随机分配最大比例
+	// 随机分配最大比例
+	rMax := 0.55
+	if num >= 1000 {
+		rMax = 0.01
+	}else if num >= 100 {
+		rMax = 0.1
+	} else if num >= 10 {
+		rMax = 0.3
+	}
 	list := make([]uint, num)
 	// 大循环开始，只要还有没分配的名额，继续分配
 	for leftNum > 0 {
@@ -127,31 +147,60 @@ func (c *lotteryController) GetGet() string {
 		return fmt.Sprintf("参数数值异常，uid=%d, id=%d\n", uid, id)
 	}
 	//list, ok := packageList[uint32(id)]
-	list1, ok := packageList.Load(uint32(id))
-	list := list1.([]int)
-	if !ok || len(list) < 1 {
+	l, ok := packageList.Load(uint32(id))
+	if !ok {
 		return fmt.Sprintf("红包不存在,id=%d\n", id)
 	}
-	// 分配的随机数
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	// 从红包金额中随机得到一个
-	i := r.Intn(len(list))
-	money := list[i]
-	// 更新红包列表中的信息
-	if len(list) > 1 {
-		if i == len(list) - 1 {
-			//packageList[uint32(id)] = list[:i]
-			packageList.Store(uint32(id), list[:i])
-		} else if i == 0 {
-			//packageList[uint32(id)] = list[1:]
-			packageList.Store(uint32(id), list[:i])
-		} else {
-			//packageList[uint32(id)] = append(list[:i], list[i+1:]...)
-			packageList.Store(uint32(id), append(list[:i], list[i+1:]...))
-		}
-	} else {
-		//delete(packageList, uint32(id))
-		packageList.Delete(uint32(id))
+	list := l.([]uint)
+	if len(list) < 1 {
+		return fmt.Sprintf("红包不存在,id=%d\n", id)
 	}
-	return fmt.Sprintf("恭喜你抢到一个红包，金额为:%d\n", money)
+	// 更新红包列表中的信息（移除这个金额），构造一个任务
+	callback := make(chan uint)
+	t := task{id: uint32(id), callback: callback}
+	// 把任务发送给channel
+	chTasks := chTaskList[id % taskNum]
+	chTasks <- t
+	// 回调的channel等待处理结果
+	money := <- callback
+	if money <= 0 {
+		fmt.Println(uid, "很遗憾，没能抢到红包")
+		return fmt.Sprintf("很遗憾，没能抢到红包\n")
+	} else {
+		fmt.Println(uid, "抢到一个红包，金额为:", money)
+		logger.Printf("weiboReadPacket success uid=%d, id=%d, money=%d\n", uid, id, money)
+		return fmt.Sprintf("恭喜你抢到一个红包，金额为:%d\n", money)
+	}
+}
+
+// 单线程死循环，专注处理各个红包中金额切片的数据更新（移除指定位置的金额）
+func fetchPackageMoney(chTasks chan task) {
+	for {
+		t := <-chTasks
+		// 分配的随机数
+		r := rand.New(rand.NewSource(time.Now().UnixNano()))
+		id := t.id
+		l, ok := packageList.Load(id)
+		if ok && l != nil {
+			list := l.([]uint)
+			// 从红包金额中随机得到一个
+			i := r.Intn(len(list))
+			money := list[i]
+			if len(list) > 1 {
+				if i == len(list) - 1 {
+					packageList.Store(uint32(id), list[:i])
+				} else if i == 0 {
+					packageList.Store(uint32(id), list[1:])
+				} else {
+					packageList.Store(uint32(id), append(list[:i], list[i+1:]...))
+				}
+			} else {
+				packageList.Delete(uint32(id))
+			}
+			// 回调channel返回
+			t.callback <- money
+		} else {
+			t.callback <- 0
+		}
+	}
 }
