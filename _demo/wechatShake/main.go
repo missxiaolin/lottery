@@ -169,6 +169,7 @@ func newApp() *iris.Application {
 	return app
 }
 
+// 微信摇一摇
 func main() {
 	app := newApp()
 
