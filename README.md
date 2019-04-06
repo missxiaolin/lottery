@@ -4,6 +4,9 @@
 
 ~~~
 go get github.com/kataras/iris
+go get github.com/kataras/iris/mvc
+go get github.com/iris-contrib/middleware/cors
+go get github.com/kataras/iris/httptest
 ~~~
 
 ### 翻墙配置
