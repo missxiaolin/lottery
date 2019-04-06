@@ -5,7 +5,10 @@ import (
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
 	"log"
+	"math/rand"
 	"os"
+	"sync"
+	"time"
 )
 
 // 奖品类型，枚举 iota 从0开始自增
@@ -42,6 +45,7 @@ var logger *log.Logger
 
 // 奖品列表
 var giftlist []*gift
+var mu sync.Mutex
 
 type lotteryController struct {
 	Ctx iris.Context
@@ -61,7 +65,7 @@ func initGift()  {
 		total:   1000,
 		left:    1000,
 		inuse:   true,
-		rate:    10000,
+		rate:    1,
 		rateMin: 0,
 		rateMax: 0,
 	}
@@ -153,7 +157,7 @@ func initGift()  {
 
 // 初始化日志信息
 func initLog() {
-	f, _ := os.Create("/Users/web/go/src/lottery/_demo/wechatShake.log")
+	f, _ := os.Create("/Users/web/go/src/lottery/_demo/wechatShake/wechatShake.log")
 	logger = log.New(f, "", log.Ldate|log.Lmicroseconds)
 }
 
@@ -184,4 +188,125 @@ func (c *lotteryController) Get() string {
 		}
 	}
 	return fmt.Sprintf("当前有效奖品种类数量: %d，限量奖品总数量=%d\n", count, total)
+}
+
+func (c *lotteryController) GetLucky() map[string]interface{} {
+	mu.Lock()
+	defer mu.Unlock()
+
+	code := luckyCode()
+	ok := false
+	result := make(map[string]interface{})
+	result["success"] = ok
+	for _, data := range giftlist {
+		if !data.inuse || (data.total > 0 && data.left <= 0) {
+			continue
+		}
+		if data.rateMin <= int(code) && data.rateMax > int(code) {
+			// 中奖了，抽奖编码在奖品中奖编码范围内
+			sendData := ""
+			switch data.gtype {
+			case giftTypeCoin:
+				ok, sendData = sendCoin(data)
+			case giftTypeCoupon:
+				ok, sendData = sendCoupon(data)
+			case giftTypeCouponFix:
+				ok, sendData = sendCouponFix(data)
+			case giftTypeRealSmall:
+				ok, sendData = sendRealSmall(data)
+			case giftTypeRealLarge:
+				ok, sendData = sendRealLarge(data)
+			}
+			if ok {
+				// 中奖后，成功得到奖品（发奖成功）
+				// 生成中奖纪录
+				saveLuckyData(code, data.id, data.name, data.link, sendData, data.left)
+				result["success"] = ok
+				result["id"] = data.id
+				result["name"] = data.name
+				result["link"] = data.link
+				result["data"] = sendData
+				break
+			}
+		}
+	}
+
+	return result
+}
+
+// 随机编码
+func luckyCode() int32 {
+	seed := time.Now().UnixNano()
+	code := rand.New(rand.NewSource(seed)).Int31n(int32(rateMax))
+	return code
+}
+
+// 发奖，虚拟币
+func sendCoin(data *gift) (bool, string) {
+	if data.total == 0 {
+		// 数量无限
+		return true, data.data
+	} else if data.left > 0 {
+		// 还有剩余
+		data.left = data.left - 1
+		return true, data.data
+	} else {
+		return false, "奖品已发完"
+	}
+}
+
+// 发奖，优惠券（不同值）
+func sendCoupon(data *gift) (bool, string) {
+	if data.left > 0 {
+		// 还有剩余的奖品
+		left := data.left - 1
+		data.left = left
+		return true, data.datalist[left]
+	} else {
+		return false, "奖品已发完"
+	}
+}
+
+// 发奖，优惠券（固定值）
+func sendCouponFix(data *gift) (bool, string) {
+	if data.total == 0 {
+		// 数量无限
+		return true, data.data
+	} else if data.left > 0 {
+		data.left = data.left - 1
+		return true, data.data
+	} else {
+		return false, "奖品已发完"
+	}
+}
+
+// 发奖，实物小
+func sendRealSmall(data *gift) (bool, string) {
+	if data.total == 0 {
+		// 数量无限
+		return true, data.data
+	} else if data.left > 0 {
+		data.left = data.left - 1
+		return true, data.data
+	} else {
+		return false, "奖品已发完"
+	}
+}
+
+// 发奖，实物大
+func sendRealLarge(data *gift) (bool, string) {
+	if data.total == 0 {
+		// 数量无限
+		return true, data.data
+	} else if data.left > 0 {
+		data.left--
+		return true, data.data
+	} else {
+		return false, "奖品已发完"
+	}
+}
+
+// 记录用户的获奖记录
+func saveLuckyData(code int32, id int, name, link, sendData string, left int) {
+	logger.Printf("lucky, code=%d, gift=%d, name=%s, link=%s, data=%s, left=%d ", code, id, name, link, sendData, left)
 }
