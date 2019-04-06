@@ -57,7 +57,7 @@ func (c *lotteryController) PostImport() string {
 func (c *lotteryController) GetLucky() string {
 	mu.Lock()
 	defer mu.Unlock()
-	
+
 	count := len(userList)
 	if count > 1 {
 		seed := time.Now().UnixNano()
