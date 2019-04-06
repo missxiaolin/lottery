@@ -128,7 +128,7 @@ func giftRate(rate string) *[5]gift {
 
 // 初始化日志信息
 func initLog() {
-	f, _ := os.Create("/Users/web/go/src/lottery/_demo/wechatShake/lottery_demo.log")
+	f, _ := os.Create("/Users/web/go/src/lottery/_demo/alipayFu/lottery_demo.log")
 	logger = log.New(f, "", log.Ldate|log.Lmicroseconds)
 }
 
