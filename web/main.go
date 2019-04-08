@@ -1,6 +1,8 @@
 package main
 
-import "github.com/kataras/iris"
+import (
+	"github.com/kataras/iris"
+)
 
 // 抽奖的控制器
 type lotteryController struct {
@@ -8,5 +10,5 @@ type lotteryController struct {
 }
 
 func main()  {
-	
+
 }
