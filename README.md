@@ -8,6 +8,7 @@ go get github.com/kataras/iris/mvc
 go get github.com/iris-contrib/middleware/cors
 go get github.com/kataras/iris/httptest
 go get github.com/go-xorm/xorm
+go get github.com/go-sql-driver/mysql
 ~~~
 
 ### 翻墙配置
