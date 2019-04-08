@@ -10,6 +10,7 @@ require (
 	github.com/dgryski/go-farm v0.0.0-20190104051053-3adb47b1fb0f // indirect
 	github.com/etcd-io/bbolt v1.3.2 // indirect
 	github.com/flosch/pongo2 v0.0.0-20181225140029-79872a7b2769 // indirect
+	github.com/go-xorm/xorm v0.7.1 // indirect
 	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/google/shlex v0.0.0-20181106134648-c34317bd91bf // indirect
 	github.com/hashicorp/go-version v1.1.0 // indirect
