@@ -9,6 +9,8 @@ go get github.com/iris-contrib/middleware/cors
 go get github.com/kataras/iris/httptest
 go get github.com/go-xorm/xorm
 go get github.com/go-sql-driver/mysql
+go get github.com/kataras/iris/middleware/recover
+go get github.com/kataras/iris/middleware/logger
 ~~~
 
 ### 翻墙配置
