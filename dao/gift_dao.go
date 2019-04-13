@@ -5,6 +5,7 @@ package dao
 
 import (
 	"github.com/go-xorm/xorm"
+	"lottery/comm"
 	"lottery/models"
 )
 
