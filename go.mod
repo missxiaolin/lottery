@@ -15,6 +15,7 @@ require (
 	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/google/shlex v0.0.0-20181106134648-c34317bd91bf // indirect
+	github.com/gorilla/securecookie v1.1.1
 	github.com/hashicorp/go-version v1.1.0 // indirect
 	github.com/iris-contrib/middleware v0.0.0-20181021162728-8bd5d51b3c2e // indirect
 	github.com/json-iterator/go v1.1.6 // indirect
