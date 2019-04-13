@@ -1,14 +1,28 @@
 package main
 
 import (
-	"github.com/kataras/iris"
+	"fmt"
+	"lottery/bootstrap"
+	"lottery/conf"
 )
 
-// 抽奖的控制器
-type lotteryController struct {
-	Ctx iris.Context
+var port = 8080
+
+func newApp() *bootstrap.Bootstrapper {
+	// 初始化应用
+	app := bootstrap.New("Go抽奖系统", "一凡Sir")
+	app.Bootstrap()
+
+	return app
 }
 
 func main()  {
+	// 服务器集群的时候才需要区分这项设置
+	// 比如：根据服务器的IP、名称、端口号等，或者运行的参数
+	if port == 8080 {
+		conf.RunningCrontabService = true
+	}
 
+	app := newApp()
+	app.Listen(fmt.Sprintf(":%d", port))
 }
