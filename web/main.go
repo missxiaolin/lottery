@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"lottery/bootstrap"
 	"lottery/conf"
+	"lottery/web/middleware/identity"
+	"lottery/web/routes"
 )
 
 var port = 8080
@@ -12,6 +14,7 @@ func newApp() *bootstrap.Bootstrapper {
 	// 初始化应用
 	app := bootstrap.New("抽奖系统", "小林")
 	app.Bootstrap()
+	app.Configure(identity.Configure, routes.Configure)
 
 	return app
 }
