@@ -15,7 +15,7 @@ type IndexController struct {
 	ServiceBlackip services.BlackipService
 }
 
-func (c IndexController) Get() string {
+func (c *IndexController) Get() string {
 	c.Ctx.Header("Content-Type", "text/html")
-	return "welcome to 使用Go语言实现抽奖系统，<a href='/public/index.html'>开始抽奖</a>"
+	return "welcome to 使用Go语言实现抽奖系统，<a href='/public/home.html'>开始抽奖</a>"
 }
