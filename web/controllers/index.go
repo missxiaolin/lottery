@@ -71,10 +71,18 @@ func (c *IndexController) GetLogin() {
 	}
 	refer := c.Ctx.GetHeader("Referer")
 	if refer == "" {
-		refer = "/public/index.html?from=login"
+		refer = "/public/home.html?from=login"
 	}
 	comm.SetLoginuser(c.Ctx.ResponseWriter(), &loginuser)
 	comm.Redirect(c.Ctx.ResponseWriter(), refer)
 }
 
-// 退出
+// 退出 /logout
+func (c * IndexController) GetLogout() {
+	refer := c.Ctx.GetHeader("Referer")
+	if refer == "" {
+		refer = "/public/home.html?from=logout"
+	}
+	comm.SetLoginuser(c.Ctx.ResponseWriter(), nil)
+	comm.Redirect(c.Ctx.ResponseWriter(), refer)
+}
