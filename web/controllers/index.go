@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/kataras/iris"
+	"lottery/comm"
 	"lottery/models"
 	"lottery/services"
 )
@@ -56,3 +58,23 @@ func (c *IndexController) GetNewprize() map[string]interface{} {
 	rs["prize_list"] = list
 	return rs
 }
+
+// 登录 GET /login
+func (c *IndexController) GetLogin() {
+	// 随机生成登录信息uid
+	uid := comm.Random(100000)
+	loginuser := models.ObjLoginuser{
+		Uid: uid,
+		Username: fmt.Sprintf("admin-%d", uid),
+		Now: comm.NowUnix(),
+		Ip: comm.ClientIP(c.Ctx.Request()),
+	}
+	refer := c.Ctx.GetHeader("Referer")
+	if refer == "" {
+		refer = "/public/index.html?from=login"
+	}
+	comm.SetLoginuser(c.Ctx.ResponseWriter(), &loginuser)
+	comm.Redirect(c.Ctx.ResponseWriter(), refer)
+}
+
+// 退出
