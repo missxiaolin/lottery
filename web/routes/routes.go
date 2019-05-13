@@ -25,4 +25,10 @@ func Configure(b *bootstrap.Bootstrapper) {
 	admin.Router.Use(middleware.BasicAuth)
 	admin.Register(userService, giftService, codeService, resultService, userdayService, blackipService)
 	admin.Handle(new(controllers.AdminController))
+
+	adminGift := admin.Party("/gift")
+	adminGift.Register(giftService)
+	adminGift.Handle(new(controllers.AdminGiftController))
+
+	
 }
