@@ -30,5 +30,7 @@ func Configure(b *bootstrap.Bootstrapper) {
 	adminGift.Register(giftService)
 	adminGift.Handle(new(controllers.AdminGiftController))
 
-	
+	adminCode := admin.Party("/code")
+	adminCode.Register(codeService)
+	adminCode.Handle(new(controllers.AdminCodeController))
 }
