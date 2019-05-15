@@ -38,5 +38,8 @@ func Configure(b *bootstrap.Bootstrapper) {
 	adminResult.Register(resultService)
 	adminResult.Handle(new(controllers.AdminResultController))
 
+	adminUser := admin.Party("/user")
+	adminUser.Register(userService)
+	adminUser.Handle(new(controllers.AdminUserController))
 
 }
