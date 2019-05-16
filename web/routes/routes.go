@@ -42,4 +42,7 @@ func Configure(b *bootstrap.Bootstrapper) {
 	adminUser.Register(userService)
 	adminUser.Handle(new(controllers.AdminUserController))
 
+	adminBlackip := admin.Party("/blackip")
+	adminBlackip.Register(blackipService)
+	adminBlackip.Handle(new(controllers.AdminBlackipController))
 }
