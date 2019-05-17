@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"lottery/conf"
 	"lottery/models"
 	"lottery/web/utils"
 )
@@ -18,6 +19,15 @@ func (api *LuckyApi)luckyDo(uid int, username, ip string) (int, string, *models.
 	}
 
 	// 3 验证用户今日参与次数
+	userDayNum := utils.IncrUserLuckyNum(uid)
+	if userDayNum > conf.UserPrizeMax {
+		return 103, "今日的抽奖次数已用完，明天再来吧", nil
+	} else {
+		ok = api.checkUserday(uid, userDayNum)
+		if !ok {
+			return 103, "今日的抽奖次数已用完，明天再来吧", nil
+		}
+	}
 
 	// 4 验证IP今日的参与次数
 
