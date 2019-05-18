@@ -5,6 +5,7 @@ import (
 	"lottery/comm"
 	"lottery/conf"
 	"lottery/models"
+	"lottery/services"
 	"lottery/web/utils"
 )
 
@@ -83,9 +84,16 @@ func (api *LuckyApi)luckyDo(uid int, username, ip string) (int, string, *models.
 	}
 
 	// 10 不同编码的优惠券的发放
+	if prizeGift.Gtype == conf.GtypeCodeDiff {
+		code := utils.PrizeCodeDiff(prizeGift.Id, services.NewCodeService())
+		if code == "" {
+			return 208, "很遗憾，没有中奖，请下次再试", nil
+		}
+		prizeGift.Gdata = code
+	}
 
 	// 11 记录中奖记录
 
 	// 12 返回抽奖结果
-	return 0, "", nil
+	return 0, "", prizeGift
 }

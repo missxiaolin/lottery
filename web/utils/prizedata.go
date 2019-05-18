@@ -324,3 +324,31 @@ func PrizeGift(id, leftNum int) bool {
 	}
 	return ok
 }
+
+// 优惠券类的发放
+func PrizeCodeDiff(id int, codeService services.CodeService) string {
+	return prizeServCodeDiff(id, codeService)
+}
+
+// 优惠券发放，使用redis的方式发放
+func prizeServCodeDiff(id int, codeService services.CodeService) string {
+	key := fmt.Sprintf("gift_code_%d", id)
+	cacheObj := datasource.InstanceCache()
+	rs, err := cacheObj.Do("SPOP", key)
+	if err != nil {
+		log.Println("prizedata.prizeServCodeDiff error=", err)
+		return ""
+	}
+	code := comm.GetString(rs, "")
+	if code == "" {
+		log.Printf("prizedata.prizeServCodeDiff rs=%s", rs)
+		return ""
+	}
+	// 更新数据库中的发放状态
+	codeService.UpdateByCode(&models.LtCode{
+		Code:       code,
+		SysStatus:  2,
+		SysUpdated: comm.NowUnix(),
+	}, nil)
+	return code
+}
