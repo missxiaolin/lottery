@@ -72,6 +72,15 @@ func (api *LuckyApi)luckyDo(uid int, username, ip string) (int, string, *models.
 	}
 
 	// 9 有限制奖品发放
+	if prizeGift.PrizeNum > 0 {
+		if utils.GetGiftPoolNum(prizeGift.Id) <= 0 {
+			return 206, "很遗憾，没有中奖，请下次再试", nil
+		}
+		ok = utils.PrizeGift(prizeGift.Id, prizeGift.LeftNum)
+		if !ok {
+			return 207, "很遗憾，没有中奖，请下次再试", nil
+		}
+	}
 
 	// 10 不同编码的优惠券的发放
 
