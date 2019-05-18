@@ -64,6 +64,12 @@ func (api *LuckyApi)luckyDo(uid int, username, ip string) (int, string, *models.
 	prizeCode := comm.Random(10000)
 
 	// 8 匹配奖品是否中奖
+	prizeGift := api.prize(prizeCode, limitBlack)
+	if prizeGift == nil ||
+		prizeGift.PrizeNum < 0 ||
+		(prizeGift.PrizeNum > 0 && prizeGift.LeftNum <= 0) {
+		return 205, "很遗憾，没有中奖，请下次再试", nil
+	}
 
 	// 9 有限制奖品发放
 
