@@ -52,3 +52,24 @@ func (api *LuckyApi) checkUserday(uid int, num int64) bool {
 	}
 	return true
 }
+
+func (api *LuckyApi) checkBlackip(ip string) (bool, *models.LtBlackip) {
+	info := services.NewBlackipService().GetByIp(ip)
+	if info == nil || info.Ip == "" {
+		return true, nil
+	}
+	if info.Blacktime > int(time.Now().Unix()) {
+		// IP黑名单存在，并且还在黑名单有效期内
+		return false, info
+	}
+	return true, info
+}
+
+func (api *LuckyApi) checkBlackUser(uid int) (bool, *models.LtUser) {
+	info := services.NewUserService().Get(uid)
+	if info != nil && info.Blacktime > int(time.Now().Unix()) {
+		// 黑名单存在并且有效
+		return false, info
+	}
+	return true, info
+}
