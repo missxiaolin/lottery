@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"lottery/conf"
 	"lottery/models"
 	"lottery/web/utils"
@@ -30,10 +31,27 @@ func (api *LuckyApi)luckyDo(uid int, username, ip string) (int, string, *models.
 	}
 
 	// 4 验证IP今日的参与次数
+	ipDayNum := utils.IncrIpLuckyNum(ip)
+	if ipDayNum > conf.IpLimitMax {
+		return 104, "相同IP参与次数太多，明天再来参与吧", nil
+	}
 
+	limitBlack := false // 黑名单
+	if ipDayNum > conf.IpPrizeMax {
+		limitBlack = true
+	}
 	// 5 验证IP黑名单
+	var blackipInfo *models.LtBlackip
+	if !limitBlack {
+		ok, blackipInfo = api.checkBlackip(ip)
+		if !ok {
+			fmt.Println("黑名单中的IP", ip, limitBlack)
+			limitBlack = true
+		}
+	}
 
 	// 6 验证用户黑名单
+
 
 	// 7 获得抽奖编码
 

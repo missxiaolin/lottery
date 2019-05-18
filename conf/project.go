@@ -3,6 +3,7 @@ package conf
 import "time"
 
 const UserPrizeMax = 3000            // 用户每天最多抽奖次数
+const IpLimitMax = 300000            // 同一个IP每天最多抽奖次数
 
 const SysTimeform = "2006-01-02 15:04:05"
 const SysTimeformShort = "2006-01-02"
