@@ -51,7 +51,13 @@ func (api *LuckyApi)luckyDo(uid int, username, ip string) (int, string, *models.
 	}
 
 	// 6 验证用户黑名单
-
+	var userInfo *models.LtUser
+	if !limitBlack {
+		ok, userInfo = api.checkBlackUser(uid)
+		if !ok {
+			limitBlack = true
+		}
+	}
 
 	// 7 获得抽奖编码
 
