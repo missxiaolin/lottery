@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"lottery/comm"
 	"lottery/conf"
 	"lottery/models"
 	"lottery/web/utils"
@@ -60,6 +61,7 @@ func (api *LuckyApi)luckyDo(uid int, username, ip string) (int, string, *models.
 	}
 
 	// 7 获得抽奖编码
+	prizeCode := comm.Random(10000)
 
 	// 8 匹配奖品是否中奖
 
