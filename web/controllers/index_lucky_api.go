@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"log"
 	"lottery/comm"
 	"lottery/conf"
 	"lottery/models"
@@ -93,6 +94,28 @@ func (api *LuckyApi)luckyDo(uid int, username, ip string) (int, string, *models.
 	}
 
 	// 11 记录中奖记录
+	result := models.LtResult{
+		GiftId:     prizeGift.Id,
+		GiftName:   prizeGift.Title,
+		GiftType:   prizeGift.Gtype,
+		Uid:        uid,
+		Username:   username,
+		PrizeCode:  prizeCode,
+		GiftData:   prizeGift.Gdata,
+		SysCreated: comm.NowUnix(),
+		SysIp:      ip,
+		SysStatus:  0,
+	}
+	err := services.NewResultService().Create(&result)
+	if err != nil {
+		log.Println("index_lucky.GetLucky ServiceResult.Create ", result,
+			", error=", err)
+		return 209, "很遗憾，没有中奖，请下次再试", nil
+	}
+	if prizeGift.Gtype == conf.GtypeGiftLarge {
+		// 如果获得了实物大奖，需要将用户、IP设置成黑名单一段时间
+		api.prizeLarge(ip, uid, username, userInfo, blackipInfo)
+	}
 
 	// 12 返回抽奖结果
 	return 0, "", prizeGift

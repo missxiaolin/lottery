@@ -325,6 +325,23 @@ func PrizeGift(id, leftNum int) bool {
 	return ok
 }
 
+// 发奖，redis缓存
+func prizeServGift(id int) bool {
+	key := "gift_pool"
+	cacheObj := datasource.InstanceCache()
+	rs, err := cacheObj.Do("HINCRBY", key, id, -1)
+	if err != nil {
+		log.Println("prizedata.prizeServGift error=", err)
+		return false
+	}
+	num := comm.GetInt64(rs, -1)
+	if num >= 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
 // 优惠券类的发放
 func PrizeCodeDiff(id int, codeService services.CodeService) string {
 	return prizeServCodeDiff(id, codeService)
