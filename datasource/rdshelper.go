@@ -111,7 +111,7 @@ func NewCache() *RedisConn {
 		pool: &pool,
 	}
 	cacheInstance = instance
-	cacheInstance.ShowDebug(true)
+	cacheInstance.ShowDebug(false)
 	//cacheInstance.ShowDebug(false)
 	return cacheInstance
 }

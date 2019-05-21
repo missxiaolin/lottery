@@ -40,7 +40,7 @@ func NewDbMaster() *xorm.Engine {
 		log.Fatal("dbhelper.InstanceDbMaster NewEngine error ", err)
 		return nil
 	}
-	instance.ShowSQL(true)
+	instance.ShowSQL(false)
 	//instance.ShowSQL(false)
 	masterInstance = instance
 	return masterInstance
