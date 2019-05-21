@@ -174,7 +174,7 @@ func GetInt64(i interface{}, d int64) int64 {
 		bits := i.([]byte)
 		if len(bits) == 8 {
 			return int64(binary.LittleEndian.Uint64(bits))
-		} else if len(bits) <= 4 {
+		} else {
 			num, err := strconv.Atoi(string(bits))
 			if err != nil {
 				return d
