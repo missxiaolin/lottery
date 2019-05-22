@@ -7,6 +7,7 @@ import (
 	"lottery/conf"
 	"lottery/models"
 	"lottery/services"
+	"lottery/web/utils"
 	"strconv"
 	"time"
 )
@@ -110,4 +111,24 @@ func (c * IndexController) GetLogout() {
 	}
 	comm.SetLoginuser(c.Ctx.ResponseWriter(), nil)
 	comm.Redirect(c.Ctx.ResponseWriter(), refer)
+}
+
+// 验证用户的IP，今天的抽奖次数是否超过每天最大允许的参与次数
+func (c *IndexController) GetCheckLimitIpday(ip string) bool {
+	num := utils.IncrIpLucyNum(ip)
+	if num > conf.IpLimitMax {
+		return false
+	} else if num > conf.IpPrizeMax {
+		return false
+	}
+	return true
+}
+
+// 验证用户的IP，今天的抽奖次数是否超过每天最大抽奖次数
+func (c *IndexController) GetCheckIpday(ip string) bool {
+	num := utils.IncrIpLucyNum(ip)
+	if num > conf.IpPrizeMax {
+		return false
+	}
+	return true
 }
