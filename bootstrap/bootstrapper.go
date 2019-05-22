@@ -2,7 +2,6 @@ package bootstrap
 
 import (
 	"github.com/gorilla/securecookie"
-	"github.com/iris-contrib/middleware/cors"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/middleware/logger"
 	"github.com/kataras/iris/middleware/recover"
@@ -110,16 +109,6 @@ const (
 	Favicon = "favicon.ico"
 )
 
-// 跨域请求解决
-func (b *Bootstrapper) setCorsOptions() {
-	corsOptions := cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowCredentials: true,
-	}
-	corsWrapper := cors.New(corsOptions).ServeHTTP
-	b.WrapRouter(corsWrapper)
-}
-
 // Bootstrap prepares our application.
 //
 // Returns itself.
@@ -132,7 +121,6 @@ func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 
 	b.Use(recover.New())
 	b.Use(logger.New())
-	b.setCorsOptions()
 	return b
 }
 
