@@ -45,5 +45,5 @@ func JwtVerifyToken(token string) {
 	}
 	fmt.Printf("解析成功\n")
 	data := parsedToken.Claims
-	fmt.Println(data["email"])
+	fmt.Println(data)
 }
