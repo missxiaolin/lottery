@@ -7,7 +7,7 @@ require (
 	github.com/Bowery/prompt v0.0.0-20180817134258-8a1d5376df1c // indirect
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/dchest/safefile v0.0.0-20151022103144-855e8d98f185 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/dgryski/go-farm v0.0.0-20190104051053-3adb47b1fb0f // indirect
 	github.com/etcd-io/bbolt v1.3.2 // indirect
 	github.com/flosch/pongo2 v0.0.0-20181225140029-79872a7b2769 // indirect
@@ -18,7 +18,7 @@ require (
 	github.com/google/shlex v0.0.0-20181106134648-c34317bd91bf // indirect
 	github.com/gorilla/securecookie v1.1.1
 	github.com/hashicorp/go-version v1.1.0 // indirect
-	github.com/iris-contrib/middleware v0.0.0-20181021162728-8bd5d51b3c2e // indirect
+	github.com/iris-contrib/middleware v0.0.0-20181021162728-8bd5d51b3c2e
 	github.com/json-iterator/go v1.1.6 // indirect
 	github.com/juju/errors v0.0.0-20190207033735-e65537c515d7 // indirect
 	github.com/juju/loggo v0.0.0-20190212223446-d976af380377 // indirect
