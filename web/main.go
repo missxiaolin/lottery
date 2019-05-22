@@ -19,7 +19,7 @@ func newApp() *bootstrap.Bootstrapper {
 	return app
 }
 
-func main()  {
+func main() {
 	// 服务器集群的时候才需要区分这项设置
 	// 比如：根据服务器的IP、名称、端口号等，或者运行的参数
 	if port == 8080 {
