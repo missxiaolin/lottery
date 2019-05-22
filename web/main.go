@@ -8,7 +8,7 @@ import (
 	"lottery/web/routes"
 )
 
-var port = 8080
+var port = 8081
 
 func newApp() *bootstrap.Bootstrapper {
 	// 初始化应用
