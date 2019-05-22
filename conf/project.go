@@ -2,12 +2,13 @@ package conf
 
 import "time"
 
-const UserPrizeMax = 3000            // 用户每天最多抽奖次数
-const IpPrizeMax = 30000             // 同一个IP每天最多抽奖次数
-const IpLimitMax = 300000            // 同一个IP每天最多抽奖次数
+const UserPrizeMax = 3000 // 用户每天最多抽奖次数
+const IpPrizeMax = 30000  // 同一个IP每天最多抽奖次数
+const IpLimitMax = 300000 // 同一个IP每天最多抽奖次数
 
 const SysTimeform = "2006-01-02 15:04:05"
 const SysTimeformShort = "2006-01-02"
+
 // 定义24小时的奖品分配权重
 var PrizeDataRandomDayTime = [100]int{
 	// 24 * 3 = 72   平均3%的机会
@@ -56,3 +57,5 @@ var SignSecret = []byte("0123456789abcdef")
 
 // cookie中的加密验证密钥
 var CookieSecret = "hellolottery"
+
+var MySecret = []byte("xiaolin")
