@@ -45,3 +45,11 @@ replace (
 	launchpad.net/gocheck => github.com/go-check/check v0.0.0-20180628173108-788fd7840127
 )
 ~~~
+
+### 安装thrift
+
+~~~
+brew install thrift
+thrift -out ../ --gen go lucky.thrift
+thrift -out ../ --gen php lucky.thrift
+~~~
