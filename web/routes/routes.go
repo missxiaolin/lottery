@@ -1,7 +1,9 @@
 package routes
 
 import (
+	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"lottery/bootstrap"
 	"lottery/services"
 	"lottery/web/controllers"
@@ -45,4 +47,7 @@ func Configure(b *bootstrap.Bootstrapper) {
 	adminBlackip := admin.Party("/blackip")
 	adminBlackip.Register(blackipService)
 	adminBlackip.Handle(new(controllers.AdminBlackipController))
+
+	// api
+	b.Get("/metrics", iris.FromStd(promhttp.Handler()))
 }

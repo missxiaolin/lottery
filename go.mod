@@ -27,7 +27,7 @@ require (
 	github.com/kr/pty v1.1.4 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.2 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
-	github.com/prometheus/client_golang v0.9.3 // indirect
+	github.com/prometheus/client_golang v0.9.3
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/stretchr/testify v1.3.0 // indirect
 	github.com/xeipuuv/gojsonschema v1.1.0 // indirect

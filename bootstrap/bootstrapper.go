@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"github.com/gorilla/securecookie"
+	prometheusMiddleware "github.com/iris-contrib/middleware/prometheus"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/middleware/logger"
 	"github.com/kataras/iris/middleware/recover"
@@ -10,6 +11,8 @@ import (
 	"lottery/cron"
 	"time"
 )
+
+var m = prometheusMiddleware.New("lottery", 300, 1200, 5000)
 
 type Configurator func(*Bootstrapper)
 
@@ -69,6 +72,9 @@ func (b *Bootstrapper) SetupSessions(expires time.Duration, cookieHashKey, cooki
 
 func (b *Bootstrapper) SetupErrorHandlers() {
 	b.OnAnyErrorCode(func(ctx iris.Context) {
+		// 监控
+		m.ServeHTTP(ctx)
+
 		err := iris.Map{
 			"app":     b.AppName,
 			"status":  ctx.GetStatusCode(),
@@ -119,6 +125,8 @@ func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 	b.StaticWeb(StaticAssets[1:len(StaticAssets)-1], StaticAssets)
 	b.setupCron()
 
+
+	b.Use(m.ServeHTTP)
 	b.Use(recover.New())
 	b.Use(logger.New())
 	return b
