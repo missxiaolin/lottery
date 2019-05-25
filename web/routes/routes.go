@@ -5,6 +5,7 @@ import (
 	"github.com/kataras/iris/mvc"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"lottery/bootstrap"
+	"lottery/comm"
 	"lottery/services"
 	"lottery/web/controllers"
 	"lottery/web/middleware"
@@ -49,5 +50,9 @@ func Configure(b *bootstrap.Bootstrapper) {
 	adminBlackip.Handle(new(controllers.AdminBlackipController))
 
 	// api
-	b.Get("/metrics", iris.FromStd(promhttp.Handler()))
+	api := b.Party("/", comm.Cors()).AllowMethods(iris.MethodOptions)
+	{
+		api.Get("/metrics", iris.FromStd(promhttp.Handler()))
+	}
+
 }

@@ -2,6 +2,8 @@ package comm
 
 import (
 	"fmt"
+	"github.com/iris-contrib/middleware/cors"
+	"github.com/kataras/iris/context"
 	"log"
 	"lottery/conf"
 	"lottery/models"
@@ -99,4 +101,12 @@ func SetLoginuser(writer http.ResponseWriter, loginuser *models.ObjLoginuser) {
 func createLoginuserSign(loginuser *models.ObjLoginuser) string {
 	str := fmt.Sprintf("uid=%d&username=%s&secret=%s", loginuser.Uid, loginuser.Username, conf.CookieSecret)
 	return CreateSign(str)
+}
+
+func Cors() context.Handler {
+	var crs = cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"}, //允许通过的主机名称
+		AllowCredentials: true,
+	})
+	return crs
 }
