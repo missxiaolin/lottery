@@ -3,6 +3,7 @@ module lottery
 go 1.12
 
 require (
+	git.apache.org/thrift.git v0.12.0 // indirect
 	github.com/AndreasBriese/bbloom v0.0.0-20190306092124-e2d15f34fcf9 // indirect
 	github.com/Bowery/prompt v0.0.0-20180817134258-8a1d5376df1c // indirect
 	github.com/ajg/form v1.5.1 // indirect
