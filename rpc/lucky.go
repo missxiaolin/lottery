@@ -5,17 +5,10 @@ package rpc
 
 import (
   "bytes"
+  "context"
   "fmt"
   "github.com/apache/thrift/lib/go/thrift"
   "reflect"
-)
-
-import (
-	"bytes"
-	"context"
-	"reflect"
-	"fmt"
-	"github.com/apache/thrift/lib/go/thrift"
 )
 
 // (needed to ensure safety because of naive import list construction.)
