@@ -49,6 +49,10 @@ func Configure(b *bootstrap.Bootstrapper) {
 	adminBlackip.Register(blackipService)
 	adminBlackip.Handle(new(controllers.AdminBlackipController))
 
+	rpc := mvc.New(b.Party("/rpc"))
+	rpc.Register(userService, giftService, codeService, resultService, userdayService, blackipService)
+	rpc.Handle(new(controllers.RpcController))
+
 	// api
 	api := b.Party("/", comm.Cors()).AllowMethods(iris.MethodOptions)
 	{
